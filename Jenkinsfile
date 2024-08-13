@@ -22,6 +22,13 @@ pipeline {
                 git branch: 'master', url: 'https://github.com/mdsajid786/EKS-Terraform-GitHub-Actions.git'
             }
         }
+        stage('MigrateState') {
+            steps {
+                withAWS(credentials: 'aws-creds', region: 'us-east-1') {
+                sh 'terraform -chdir=eks/ init -migrate-state'
+                }
+            }
+        }
         stage('Init') {
             steps {
                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
@@ -29,6 +36,7 @@ pipeline {
                 }
             }
         }
+
         stage('Validate') {
             steps {
                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
